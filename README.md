@@ -23,33 +23,53 @@ Imports and uses custom built String
 
 Protected Attributes :
 
-    String UserID : This is the ID used to refer to the user across the whole program. Cannot be changed once set.
-    String name : This is the name of the User that will be use to refer to them across the whole program. Can be changed.
-    String passwordHash : This is the password of the User hashed so it is unreadable in this form. Can be changed.
-    String role : This is the User's role in the system. Cannot be changed once set.
-    int attempts : These are the User's failed attempts after which the account will be locked.
-    bool locked : Stores the current state of the account. Active/Locked.
+    String UserID; #This is the ID used to refer to the user across the whole program. Cannot be changed once set.
+    String name; #This is the name of the User that will be use to refer to them across the whole program. Can be changed.
+    String passwordHash; #This is the password of the User hashed so it is unreadable in this form. Can be changed.
+    String role; #This is the User's role in the system. Cannot be changed once set.
+    int attempts; #These are the User's failed attempts after which the account will be locked.
+    bool locked; #Stores the current state of the account. Active/Locked.
 
 Protected Functions :
 
-    String get_user_id() : returns UserID.
-    String get_user_name() : returns name.
-    String get_password() : returns passwordHash.
-    String get_user_role() : returns role.
-    int get_attempts() : returns attempts.
-    bool is_locked() : returns locked.
+    String get_user_id(); #returns UserID.
+    String get_user_name(); #returns name.
+    String get_password(); #returns passwordHash.
+    String get_user_role(); #returns role.
+    int get_attempts(); #returns attempts.
+    bool is_locked(); #returns locked.
 
 Public Functions :
 
     Constructors : 
-        User(String, String, String, String, int, bool) : Parameterized constructor.
-        User(const User&) : Copy Constructor.
+        User(String, String, String, String, int, bool); #Parameterized constructor.
+        User(const User&); #Copy Constructor.
     Other Functions : 
-        void operator=(const User&) : Assignment Function.
-        bool authenticate(String);
-        virtual void display_info() : Outputs User Information, Can be overridden by derived classes to customise the information to output.
-        void change_password(String) : Updates current password.
-        void set_name(String) : Updates current name.
-        virtual void show_menu() = 0 : Pure Virtual Function will be defined in derived classes.
-        virtual void serialize() = 0 : Pure Virtual Function will be defined in derived classes.
-        virtual void deserialize(String) = 0 : Pure Virtual Function will be defined in derived classes.
+        void operator=(const User&); #Assignment Function.
+        bool authenticate(String); #Check whether password passed as arugument is same as User password.
+        virtual void display_info(); #Outputs User Information, Can be overridden by derived classes to customise the information to output.
+        void change_password(String); #Updates current password.
+        void set_name(String); #Updates current name.
+        virtual void show_menu() = 0; #Pure Virtual Function will be defined in derived classes.
+        virtual void serialize() = 0; #Pure Virtual Function will be defined in derived classes.
+        virtual void deserialize(String) = 0; #Pure Virtual Function will be defined in derived classes.
+
+Storage<T> :
+Template Based Class used as a container to store and manage Objects.
+
+Imports and Uses custom built String and Vector Class.
+
+Private Attributes : 
+    myVector<T> items; #Holds the Objects in a Vector.
+
+Public Functions :
+
+    Constructors : 
+        Storage() : items(T(), 0) {} #Creates an empty Vector with Capacity 0 of the desired Type.
+    Other Functions :
+        void add(const T& item); #Adds an Object to the Vector items.
+        int get_count(); #Returns the number of items currently in the Vector items.
+        T& get_at(int pos) #Returns the Object at pos, if it exists.
+        T* find_ptr(const String& id); #Checks the Vector items for the desired id, if it exists returns it else returns nullptr.
+        void save_to_file(const char* filename); #Saves all the current Object's data to the file provided as argument.
+        void clear_storage(); #Clears all Objects currently in Vector items.

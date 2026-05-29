@@ -27,9 +27,11 @@ public:
 	String(const char*);
 	String(const String&);
 	String(long long int);
+	String(long int);
+	String(int);
+	String(double);
 	~String();
 	String& operator=(const String&);
-	const char* c_str() const;
 	void Print();
 	char& at(int);
 	char& operator[](int);
@@ -44,6 +46,8 @@ public:
 	String& operator+=(const String&);
 	String& operator+=(char);
 	int compare(const String&);
+	double stod();
+	String dtos(double);
 	long long int stoi();
 	String itos(long long int);
 	String trim();

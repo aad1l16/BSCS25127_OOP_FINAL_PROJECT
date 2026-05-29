@@ -145,18 +145,65 @@ String::String(const String& str) {
 }
 
 String::String(long long int num) {
+	bool is_neg = false;
+	if (num < 0) {
+		is_neg = true;
+		num *= -1;
+	}
 	this->l = 1;
-	s = new char[this->l + 1];
-	s[0] = (num % 10) + '0';
+	this->s = new char[this->l + 1];
+	this->s[0] = (num % 10) + '0';
 	num /= 10;
-	s[1] = '\0';
+	this->s[1] = '\0';
 	for (int i = 0; num != 0; i++) {
-		s = regrow(s, 1, 0);
-		s[0] = (num % 10) + '0';
+		this->s = regrow(this->s, 1, 0);
+		this->s[0] = (num % 10) + '0';
 		num /= 10;
 		this->l++;
 	}
+	if (is_neg) insert(0, "-");
 }
+
+String::String(long int num) : String(static_cast<long long int>(num)) {}
+
+String::String(int num) : String(static_cast<long long int>(num)) {}
+
+String::String(double num) {
+	bool is_neg = false;
+	if (num < 0) {
+		is_neg = true;
+		num *= -1;
+	}
+	long long int intPart = num;
+	double fracPart = num - intPart;
+	String intStr{intPart};
+	if (is_neg) intStr.insert(0, '-');
+	int precision = 6;
+	String fracStr;
+	for (int i = 0; i < precision; i++) {
+		fracPart *= 10;
+		int digit = static_cast<int>(fracPart);
+		fracStr += static_cast<char>(digit + '0');
+		fracPart -= digit;
+	}
+	while (fracStr.Length() > 0 && fracStr.back() == '0') {
+		fracStr.remove_at(fracStr.Length() - 1);
+	}
+
+	if (fracStr.Length() > 0) {
+		intStr += ".";
+		intStr += fracStr;
+	}
+
+	this->l = intStr.l;
+	this->s = new char[this->l + 1];
+	for (int i = 0; i < this->l; i++) {
+		this->s[i] = intStr[i];
+	}
+	this->s[this->l] = '\0';
+}
+
+
 
 String::~String() {
 	delete[] this->s;
@@ -174,10 +221,6 @@ String& String::operator=(const String& str) {
 		this->s[this->l] = '\0';
 	}
 	return *(this);
-}
-
-const char* String::c_str() const {
-	return this->s;
 }
 
 void String::Print() {
@@ -283,17 +326,50 @@ int String::compare(const String& temp) {
 
 }
 
+double String::stod() {
+	if (this->s == nullptr || this->l == 0) return 0.0;
+	double intPart = 0;
+	int i = 0;
+	bool is_neg = false;
+	if (this->s[0] == '-') {
+		is_neg = true;
+		i++;
+	}
+	for (; this->s[i] != '.' && this->s[i] != '\0'; i++) {
+		intPart = (intPart * 10) + (this->s[i] - '0');
+	}
+	if (this->s[i] == '\0') return intPart;
+	double div = 0.1;
+	i++;
+	for (; this->s[i] != '\0'; i++) {
+		intPart += (this->s[i] - '0') * div;
+		div /= 10;
+	}
+	if (is_neg) intPart *= -1;
+	return intPart;
+}
+
+String String::dtos(double num) {
+	return String(num);
+}
+
 long long int String::stoi() {
-	long long int temp = this->s[0] - '0';
-	for (int i = 1; i < this->l; i++) {
+	bool is_neg = false;
+	int i = 0;
+	if (this->s[0] == '-') {
+		is_neg = true;
+		i++;
+	}
+	long long int temp = 0;
+	for (; i < this->l; i++) {
 		temp = (temp * 10) + (this->s[i] - '0');
 	}
+	if (is_neg) temp *= -1;
 	return temp;
 }
 
 String String::itos(long long int num) {
-	String temp(num);
-	return temp;
+	return String(num);
 }
 
 String String::trim() {
