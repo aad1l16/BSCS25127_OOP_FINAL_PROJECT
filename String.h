@@ -26,10 +26,10 @@ public:
 	String();
 	String(const char*);
 	String(const String&);
-	String(long long int);
-	String(long int);
-	String(int);
-	String(double);
+	explicit String(double);
+	explicit String(long long int);
+	explicit String(long int);
+	explicit String(int);
 	~String();
 	String& operator=(const String&);
 	void Print();

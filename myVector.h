@@ -10,19 +10,21 @@ class myVector {
 	int c;
 	t v;
 	t* regrow(t* old_ptr) {
-		t* new_ptr = new t[this->c * 2];
+		int temp;
+		if (this->c == 0) temp = 1;
+		else temp = this->c * 2;
+		t* new_ptr = new t[temp];
 		for (int i = 0; i < this->c; i++) {
 			new_ptr[i] = old_ptr[i];
 		}
-		for (int i = this->c; i < this->c * 2; i++) {
+		for (int i = this->c; i < temp; i++) {
 			new_ptr[i] = this->v;
 		}
 		delete[] old_ptr;
-		this->c *= 2;
+		this->c = temp;
 		return new_ptr;
 	}
 public:
-	//myVector();
 	myVector(t val, int cap = 0) : s{ 0 }, c{ cap }, v{ val } {
 		this->ptr = new t[cap];
 		for (int i = 0; i < this->c; i++) {
@@ -30,7 +32,7 @@ public:
 		}
 	}
 	~myVector() {
-
+		delete[] this->ptr;
 	}
 	void display() {
 		cout << "Size : " << this->s << "\t" << "Capacity : " << this->c << endl;
@@ -69,6 +71,16 @@ public:
 		}
 		catch (...) {
 			cout << "Invalid position.\n";
+			return this->v;
+		}
+	}
+	t& get_live_reference_at(int pos) {
+		try {
+			if (pos < 0 || pos > this->s - 1) throw(1);
+			return this->ptr[pos];
+		}
+		catch (...) {
+			cout << "Invalid Position.\n";
 			return this->v;
 		}
 	}
@@ -139,6 +151,9 @@ public:
 		this->ptr = temp;
 	}
 	void clear() {
+		for (int i = 0; i < this->s; i++) {
+			this->s[i] = this->v;
+		}
 		this->s = 0;
 	}
 	void push_back(t val) {

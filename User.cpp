@@ -8,19 +8,35 @@ String User::get_user_name() {
 	return this->name;
 }
 
+String User::get_password() {
+	return this->passwordHash;
+}
+
 String User::get_user_role() {
 	return this->role;
 }
 
-User::User(String id, String n, String p, String r) : UserID{ id }, name{ n }, passwordHash{ p }, role{ r } {}
+int User::get_attempts() {
+	return this->attempts;
+}
 
-User::User(const User& u) : UserID{ u.UserID }, name{ u.name }, passwordHash{ u.passwordHash }, role{ u.role } {}
+bool User::is_locked() {
+	return this->locked;
+}
+
+User::User() : UserID{ "UNINITIALIZED" }, name{ "" }, passwordHash{ "" }, role{ "" }, attempts{ 0 }, locked{ false } {}
+
+User::User(String id, String n, String p, String r, int a, bool l) : UserID{ id }, name{ n }, passwordHash{ p }, role{ r }, attempts{ a }, locked{ l } {}
+
+User::User(const User& u) : UserID{ u.UserID }, name{ u.name }, passwordHash{ u.passwordHash }, role{ u.role }, attempts{ u.attempts }, locked{ u.locked } {}
 
 void User::operator=(const User& u) {
 	this->UserID = u.UserID;
 	this->name = u.name;
 	this->passwordHash = u.passwordHash;
 	this->role = u.role;
+	this->attempts = u.attempts;
+	this->locked = u.locked;
 }
 
 bool User::authenticate(String pass) {
@@ -32,3 +48,10 @@ void User::display_info() {
 	std::cout << this->UserID << " " << this->name << " " << this->role;
 }
 
+void User::change_password(String newPass) {
+	this->passwordHash = newPass;
+}
+
+void User::set_name(String newName) {
+	this->name = newName;
+}

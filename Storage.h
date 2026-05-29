@@ -5,6 +5,7 @@
 
 template<typename T>
 class Storage {
+private:
 	myVector<T> items;
 public:
 	Storage() : items(T(), 0) {}
@@ -17,7 +18,7 @@ public:
 	T& get_at(int pos) {
 		return items.get_live_reference_at(pos);
 	}
-	T* find_ptr(String id) {
+	T* find_ptr(const String& id) {
 		int size = items.size();
 		for (int i = 0; i < size; i++) {
 			if (items.get_live_reference_at(i).get_user_id() == id) {

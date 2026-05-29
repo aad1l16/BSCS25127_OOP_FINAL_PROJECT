@@ -19,7 +19,7 @@ Custom Built Template Based Vector Class used throughout this project
 
 User (Abstract Base Class) :
 
-Imports and uses custom built String
+Imports and Uses custom built String.
 
 Protected Attributes :
 
@@ -30,7 +30,7 @@ Protected Attributes :
     int attempts; #These are the User's failed attempts after which the account will be locked.
     bool locked; #Stores the current state of the account. Active/Locked.
 
-Protected Functions :
+Protected Methods :
 
     String get_user_id(); #returns UserID.
     String get_user_name(); #returns name.
@@ -39,12 +39,13 @@ Protected Functions :
     int get_attempts(); #returns attempts.
     bool is_locked(); #returns locked.
 
-Public Functions :
+Public Methods :
 
     Constructors : 
+        User(); #Default Constructor, Useful when creating Storage.
         User(String, String, String, String, int, bool); #Parameterized constructor.
         User(const User&); #Copy Constructor.
-    Other Functions : 
+    Other Methods : 
         void operator=(const User&); #Assignment Function.
         bool authenticate(String); #Check whether password passed as arugument is same as User password.
         virtual void display_info(); #Outputs User Information, Can be overridden by derived classes to customise the information to output.
@@ -54,18 +55,20 @@ Public Functions :
         virtual void serialize() = 0; #Pure Virtual Function will be defined in derived classes.
         virtual void deserialize(String) = 0; #Pure Virtual Function will be defined in derived classes.
 
+
 Storage<T> :
 Template Based Class used as a container to store and manage Objects.
 
-Imports and Uses custom built String and Vector Class.
+Imports and Uses custom built String and Vector.
 
 Private Attributes : 
+
     myVector<T> items; #Holds the Objects in a Vector.
 
-Public Functions :
+Public Methods :
 
     Constructors : 
-        Storage() : items(T(), 0) {} #Creates an empty Vector with Capacity 0 of the desired Type.
+        Storage() : items(T(), 0); #Creates an empty Vector with Capacity 0 of the desired Type.
     Other Functions :
         void add(const T& item); #Adds an Object to the Vector items.
         int get_count(); #Returns the number of items currently in the Vector items.
@@ -73,3 +76,35 @@ Public Functions :
         T* find_ptr(const String& id); #Checks the Vector items for the desired id, if it exists returns it else returns nullptr.
         void save_to_file(const char* filename); #Saves all the current Object's data to the file provided as argument.
         void clear_storage(); #Clears all Objects currently in Vector items.
+
+
+Apppointment : 
+
+Used to track Appointments Patients have with Doctors. 
+
+Imports and Uses custom built String.
+
+Private Attributes : 
+
+    String appointmentID; #Unique for each appointment.
+    String patientID; #ID of the patient the appoinment is for.
+    String doctorID; #ID of the doctor responsible for the patient.
+    String dateStr;  #Date of when the appointment is scheduled.
+    String timeStr; #Time of when the appointment is scheduled.
+    String status; #Status of the appointment whether it is completed or pending.
+
+Public Methods :
+
+    Constructors : 
+        Appointment(); #Default constructor, Useful when creating store for Appointment.
+        Appointment(String, String, String, String, String, String = "Pending"); #Parameterized Constructor, Status is set as Pending by Default.
+        Appointment(const Appointment&); #Copy Constructor.
+    Other Methods :
+        void operator=(const Appointment&); #Assignment Function.
+        String get_user_id(); #Returns the appointmentID, named get_user_id so it works polymorphically when Storage is created and find_ptr is called.
+        String get_patient_id(); #returns patiendID.
+        String get_doctor_id(); #returns doctorID.
+        String get_status(); #returns status.
+        void update_status(const String&); #Changes status to argument passed.
+        String serialize(); #Formats data into a String in CSV format to be stored in files. Returns the String.
+

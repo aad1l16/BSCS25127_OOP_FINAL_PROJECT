@@ -161,9 +161,10 @@ String::String(long long int num) {
 		num /= 10;
 		this->l++;
 	}
-	if (is_neg) insert(0, "-");
+	if (is_neg) {
+		this->insert(0, '-');
+	}
 }
-
 String::String(long int num) : String(static_cast<long long int>(num)) {}
 
 String::String(int num) : String(static_cast<long long int>(num)) {}
@@ -176,8 +177,18 @@ String::String(double num) {
 	}
 	long long int intPart = num;
 	double fracPart = num - intPart;
-	String intStr{intPart};
-	if (is_neg) intStr.insert(0, '-');
+	this->l = 1;
+	this->s = new char[this->l + 1];
+	this->s[0] = (intPart % 10) + '0';
+	num /= 10;
+	this->s[1] = '\0';
+	for (int i = 0; intPart != 0; i++) {
+		this->s = regrow(this->s, 1, 0);
+		this->s[0] = (intPart % 10) + '0';
+		intPart /= 10;
+		this->l++;
+	}
+	if (is_neg) insert(0, '-');
 	int precision = 6;
 	String fracStr;
 	for (int i = 0; i < precision; i++) {
@@ -191,18 +202,10 @@ String::String(double num) {
 	}
 
 	if (fracStr.Length() > 0) {
-		intStr += ".";
-		intStr += fracStr;
+		operator+=(".");
+		operator+=(fracStr);
 	}
-
-	this->l = intStr.l;
-	this->s = new char[this->l + 1];
-	for (int i = 0; i < this->l; i++) {
-		this->s[i] = intStr[i];
-	}
-	this->s[this->l] = '\0';
 }
-
 
 
 String::~String() {
@@ -212,8 +215,7 @@ String::~String() {
 String& String::operator=(const String& str) {
 	if (this->s != str.s) {
 		this->l = str.l;
-		//if (this->s != nullptr) 
-		delete[] this->s;
+		if (this->s != nullptr) delete[] this->s;
 		this->s = new char[this->l + 1];
 		for (int i = 0; i < this->l; i++) {
 			this->s[i] = str.s[i];
