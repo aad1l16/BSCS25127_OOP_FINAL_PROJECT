@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>
-using namespace std;
 
 template<typename t>
 
@@ -35,13 +34,13 @@ public:
 		delete[] this->ptr;
 	}
 	void display() {
-		cout << "Size : " << this->s << "\t" << "Capacity : " << this->c << endl;
-		cout << "Vector : [";
+		std::cout << "Size : " << this->s << "\t" << "Capacity : " << this->c << std::endl;
+		std::cout << "Vector : [";
 		for (int i = 0; i < this->c - 1; i++) {
-			cout << this->ptr[i] << ", ";
+			std::cout << this->ptr[i] << ", ";
 		}
-		if (this->c > 0) cout << this->ptr[this->c - 1];
-		cout << "]\n";
+		if (this->c > 0) std::cout << this->ptr[this->c - 1];
+		std::cout << "]\n";
 	}
 	myVector& operator=(const myVector& other) {
 		if (this->ptr != other.ptr) {
@@ -70,7 +69,7 @@ public:
 			return this->ptr[pos];
 		}
 		catch (...) {
-			cout << "Invalid position.\n";
+			std::cout << "Invalid position.\n";
 			return this->v;
 		}
 	}
@@ -80,7 +79,7 @@ public:
 			return this->ptr[pos];
 		}
 		catch (...) {
-			cout << "Invalid Position.\n";
+			std::cout << "Invalid Position.\n";
 			return this->v;
 		}
 	}
@@ -90,7 +89,7 @@ public:
 			return this->ptr[pos];
 		}
 		catch (...) {
-			cout << "Invalid position.\n";
+			std::cout << "Invalid position.\n";
 			return this->v;
 		}
 	}
@@ -100,7 +99,7 @@ public:
 			return this->ptr[0];
 		}
 		catch (...){
-			cout << "No items in vectors.\n";
+			std::cout << "No items in vectors.\n";
 			return this->v;
 		}
 	}
@@ -110,7 +109,7 @@ public:
 			return this->ptr[this->s - 1];
 		}
 		catch (...){
-			cout << "No items in vectors.\n";
+			std::cout << "No items in vectors.\n";
 			return this->v;
 		}
 	}
@@ -192,6 +191,7 @@ public:
 			}
 		}
 	}
+
 	void swap(myVector& other) {
 		t* temp = this->ptr;
 		int tempVar = this->s;
@@ -232,6 +232,5 @@ public:
 	bool operator>=(const myVector& other) {
 		if (size() <= other.size()) return true;
 		return false;
-
 	}
 };

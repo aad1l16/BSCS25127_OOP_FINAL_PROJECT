@@ -30,7 +30,7 @@ public:
 	void save_to_file(const char* filename) {
 		std::ofstream fout(filename);
 		if (!fout) {
-			cout << "File not found.\n";
+			std::cout << "File not found.\n";
 			return;
 		}
 		int ct = items.size();

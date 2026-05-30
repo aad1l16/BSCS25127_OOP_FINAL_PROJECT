@@ -10,17 +10,17 @@ protected:
 	int attempts;
 	bool locked;
 
+public:
+	User();
+	User(String, String, String, String, int, bool);
+	User(const User&);
+	User& operator=(const User&);
 	String get_user_id();
 	String get_user_name();
 	String get_password();
 	String get_user_role();
 	int get_attempts();
 	bool is_locked();
-public:
-	User();
-	User(String, String, String, String, int, bool);
-	User(const User&);
-	void operator=(const User&);
 	bool authenticate(String);
 	virtual void display_info();
 	void change_password(String);

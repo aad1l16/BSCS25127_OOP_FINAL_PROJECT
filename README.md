@@ -30,15 +30,6 @@ Protected Attributes :
     int attempts; #These are the User's failed attempts after which the account will be locked.
     bool locked; #Stores the current state of the account. Active/Locked.
 
-Protected Methods :
-
-    String get_user_id(); #returns UserID.
-    String get_user_name(); #returns name.
-    String get_password(); #returns passwordHash.
-    String get_user_role(); #returns role.
-    int get_attempts(); #returns attempts.
-    bool is_locked(); #returns locked.
-
 Public Methods :
 
     Constructors : 
@@ -47,6 +38,12 @@ Public Methods :
         User(const User&); #Copy Constructor.
     Other Methods : 
         void operator=(const User&); #Assignment Function.
+        String get_user_id(); #returns UserID.
+        String get_user_name(); #returns name.
+        String get_password(); #returns passwordHash.
+        String get_user_role(); #returns role.
+        int get_attempts(); #returns attempts.
+        bool is_locked(); #returns locked.
         bool authenticate(String); #Check whether password passed as arugument is same as User password.
         virtual void display_info(); #Outputs User Information, Can be overridden by derived classes to customise the information to output.
         void change_password(String); #Updates current password.
@@ -104,7 +101,33 @@ Public Methods :
         String get_user_id(); #Returns the appointmentID, named get_user_id so it works polymorphically when Storage is created and find_ptr is called.
         String get_patient_id(); #returns patiendID.
         String get_doctor_id(); #returns doctorID.
+        String get_date(); #returns dateStr;
+        String get_time(); #returns timeStr;
         String get_status(); #returns status.
         void update_status(const String&); #Changes status to argument passed.
         String serialize(); #Formats data into a String in CSV format to be stored in files. Returns the String.
 
+
+Doctor : 
+
+Derived from User. Is a User in the System. Manages appointments with Patients and diagnoses them.
+
+Imports and Uses custom built String.
+
+Private Attributes : 
+
+    String specialization; #The field the doctor specializes in.
+    double consultationFee; #The fee the doctor charges for consultation.
+
+Public Methods : 
+
+    Constructors : 
+        Doctor(); #Default constructor, Useful when creating store for Doctor.
+        Doctor(String, String, String, String, int, bool, String, double); #Parameterized constructor.
+        Doctor(const Doctor&); #Copy constructor.
+    Other Methods :
+        Doctor& operator=(const Doctor&); #Assignment Function.
+        void show_menu() override; #Shows a the menu relevant for Doctor.
+        String serialize() override; #Returns all Doctor attributes in a single String in CSV format to be stored in files.
+        void view_appointments(Storage<Appointment>&); #Displays all appointments for the current Doctor.
+        void diagnose_patient(Storage<Appointment>&, Storage<Patient>&); #Allows Doctor to diagnose any patient they are responsible for.

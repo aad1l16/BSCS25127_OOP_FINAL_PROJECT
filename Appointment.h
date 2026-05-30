@@ -14,10 +14,12 @@ public:
 	Appointment();
 	Appointment(String, String, String, String, String, String = "Pending");
 	Appointment(const Appointment&);
-	void operator=(const Appointment&);
+	Appointment& operator=(const Appointment&);
 	String get_user_id();
 	String get_patient_id();
 	String get_doctor_id();
+	String get_date();
+	String get_time();
 	String get_status();
 	void update_status(const String&);
 	String serialize();

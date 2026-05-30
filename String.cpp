@@ -376,17 +376,19 @@ String String::itos(long long int num) {
 
 String String::trim() {
 	String temp;
+	if (this->l == 0 || this->s == nullptr) return temp;
 	int k = 0, i = 0, m = this->l - 1;
-	for (; ; i++) {
+	for (; i < this->l; i++) {
 		if (this->s[i] != ' ' && this->s[i] != '\n' && this->s[i] != '\t') {
 			break;
 		}
 	}
-	for (; ; m--) {
+	for (; m >= i; m--) {
 		if (this->s[m] != ' ' && this->s[m] != '\n' && this->s[m] != '\t') {
 			break;
 		}
 	}
+	if (i > m) return temp;
 	for (int j = i; j <= m; j++) {
 		temp.s = regrow(temp.s, 1, k);
 		temp.l++;
@@ -397,17 +399,19 @@ String String::trim() {
 
 String String::trim() const {
 	String temp;
+	if (this->l == 0 || this->s == nullptr) return temp;
 	int k = 0, i = 0, m = this->l - 1;
-	for (; ; i++) {
+	for (; i < this->l; i++) {
 		if (this->s[i] != ' ' && this->s[i] != '\n' && this->s[i] != '\t') {
 			break;
 		}
 	}
-	for (; ; m--) {
+	for (; m >= i; m--) {
 		if (this->s[m] != ' ' && this->s[m] != '\n' && this->s[m] != '\t') {
 			break;
 		}
 	}
+	if (i > m) return temp;
 	for (int j = i; j <= m; j++) {
 		temp.s = regrow(temp.s, 1, k);
 		temp.l++;

@@ -30,13 +30,14 @@ User::User(String id, String n, String p, String r, int a, bool l) : UserID{ id 
 
 User::User(const User& u) : UserID{ u.UserID }, name{ u.name }, passwordHash{ u.passwordHash }, role{ u.role }, attempts{ u.attempts }, locked{ u.locked } {}
 
-void User::operator=(const User& u) {
+User& User::operator=(const User& u) {
 	this->UserID = u.UserID;
 	this->name = u.name;
 	this->passwordHash = u.passwordHash;
 	this->role = u.role;
 	this->attempts = u.attempts;
 	this->locked = u.locked;
+	return *this;
 }
 
 bool User::authenticate(String pass) {
