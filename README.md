@@ -118,6 +118,7 @@ Private Attributes :
 
     String specialization; #The field the doctor specializes in.
     double consultationFee; #The fee the doctor charges for consultation.
+    int shift; #The shift in which the doctor attends a patient(1 = Morning/ 2 = Evening).
 
 Public Methods : 
 
@@ -128,6 +129,41 @@ Public Methods :
     Other Methods :
         Doctor& operator=(const Doctor&); #Assignment Function.
         void show_menu() override; #Shows a the menu relevant for Doctor.
+        String get_specialization(); #Returns specialization.
+        double get_consultation_fee(); #Returns consultationFee.
+        int get_shift(); #Return the shift in integer form (1/2).
+        String get_shift_string(); #Returns the shift in String form(Morning/Evening).
         String serialize() override; #Returns all Doctor attributes in a single String in CSV format to be stored in files.
         void view_appointments(Storage<Appointment>&); #Displays all appointments for the current Doctor.
         void diagnose_patient(Storage<Appointment>&, Storage<Patient>&); #Allows Doctor to diagnose any patient they are responsible for.
+
+
+Patient : 
+
+Derived from User. Is a User in the System. Books appointments with doctors.
+
+Imports and Uses custom built String.
+
+Private Attributes : 
+
+    int age; #Age of the patient.
+    double outstandingBill; #The remaining due Patient still has to clear.
+    String medicalHistory; #Patient's Medical History.
+
+Public Methods : 
+
+    Constructors : 
+        Patient(); #Default constructor, Useful when creating store for Pateint.
+        Patient(String, String, String, String, int, bool, int, double, String); #Parameterized Constructor.
+        Patient(const Patient&); #Copy constructor.
+    Other Methods : 
+        Patient& operator=(const Patient&); #Assignment Function.
+        int get_age(); #Returns age.
+        double get_outstanding_bill(); #Returns outstandingBill.
+        String get_medical_history(); #Returns medicalHistory.
+        void show_menu() override; #Shows the menu relevant for Patient.
+        String serialize() override; #Returns all Patient attributes in a single String in CSV format to be stored in files.
+        void view_medical_history(); #Displays the medicalHistory if it exists.
+        void book_appointment(Storage<Doctor> &, Storage<Appointment>&); #Allows Patient to book an appointment.
+        void pay_outstanding_dues(double); #Allows Patient to clear their dues. 
+        void add_medical_record(const String&, const String&); #Function used by doctor to add notes to Patient's medicalHistory.

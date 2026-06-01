@@ -2,15 +2,36 @@
 
 Doctor::Doctor() : User(), specialization{ "" }, consultationFee{ 0.0 } {}
 
-Doctor::Doctor(String id, String n, String p, String r, int a, bool l, String spec, double cF) : User(id, n, p, r, a, l), specialization{ spec }, consultationFee{ cF } {}
+Doctor::Doctor(String id, String n, String p, String r, int a, bool l, String spec, double cF, int shiftTime) : User(id, n, p, r, a, l), specialization{ spec }, consultationFee{ cF }, shift{ shiftTime } {}
 
-Doctor::Doctor(const Doctor& d) : User(d.UserID, d.name, d.passwordHash, d.role, d.attempts, d.locked), specialization{ d.specialization }, consultationFee{ d.consultationFee } {}
+Doctor::Doctor(const Doctor& d) : User(d.UserID, d.name, d.passwordHash, d.role, d.attempts, d.locked), specialization{ d.specialization }, consultationFee{ d.consultationFee }, shift{ d.shift } {}
 
 Doctor& Doctor::operator=(const Doctor& d) {
 	User::operator=(d);
 	this->specialization = d.specialization;
 	this->consultationFee = d.consultationFee;
+	this->shift = d.shift;
 	return *this;
+}
+
+String Doctor::get_specialization() {
+	return this->specialization;
+}
+
+double Doctor::get_consultation_fee() {
+	return this->consultationFee;
+}
+
+int Doctor::get_shift() {
+	return this->shift;
+}
+
+String Doctor::get_shift_string() {
+	if (this->shift == 1) {
+		return "Morning";
+	}
+	else if (this->shift == 2) return "Evening";
+	else return "Unknown";
 }
 
 void Doctor::show_menu() {
@@ -25,7 +46,7 @@ void Doctor::show_menu() {
 }
 
 String Doctor::serialize() {
-	return this->UserID + "," + this->name + "," + this->passwordHash + "," + this->role + "," + this->UserID.itos(this->attempts) + "," + this->UserID.itos(this->locked) + "," + this->specialization + "," + this->UserID.dtos(this->consultationFee);
+	return this->UserID + "," + this->name + "," + this->passwordHash + "," + this->role + "," + this->UserID.itos(this->attempts) + "," + this->UserID.itos(this->locked) + "," + this->specialization + "," + this->UserID.dtos(this->consultationFee) + "," + this->UserID.itos(this->shift);
 }
 
 void Doctor::view_appointments(Storage<Appointment>& appt_store) {
