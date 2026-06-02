@@ -196,7 +196,8 @@ Public Methods :
         void show_menu() override; #Shows the menu relevant for Admin.
         String serialize() override; #Returns all Admin attributes in a single String in CSV format to be stored in files.
         void add_doctor(Storage<Doctor>&); #Adds a new Doctor into the system.
-        void add_patient(Storage <Patient>&); #Adds a new Patient into the system.
+        void add_patient(Storage<Patient>&); #Adds a new Patient into the system.
+        void add_admin(Storage<Admin>&); #Adds a new Admin into the system.
         void unlock_user(Storage<Doctor>&, Storage<Patient>&, Storage<Admin>&); #Unlocks a locked account.
         void lock_user(Storage<Doctor>&, Storage<Patient>&, Storage<Admin>&); #Locks an unlocked account.
         void view_all_records(Storage<Doctor>&, Storage<Patient>&, Storage<Admin>&, Storage<Appointment>&); #Displays all users and appointments in the system.

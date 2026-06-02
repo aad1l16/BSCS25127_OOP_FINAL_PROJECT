@@ -57,7 +57,7 @@ public:
 	myVector& assign(int cap, t value) {
 		this->c = cap;
 		delete[] this->ptr;
-		this->ptr = new int[this->c];
+		this->ptr = new t[this->c];
 		for (int i = 0; i < this->c; i++) {
 			this->ptr[i] = value;
 		}
@@ -151,7 +151,7 @@ public:
 	}
 	void clear() {
 		for (int i = 0; i < this->s; i++) {
-			this->s[i] = this->v;
+			this->ptr[i] = this->v;
 		}
 		this->s = 0;
 	}
