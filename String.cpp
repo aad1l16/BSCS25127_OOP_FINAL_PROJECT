@@ -232,7 +232,9 @@ void String::Print() {
 char& String::at(int pos) {
 	if (pos < 0 || pos > this->l - 1) {
 		std::cout << "Invalid position. Returning Null\n";
-		return this->s[this->l];
+		static char null;
+		null = '\0';
+		return null;
 	}
 	return this->s[pos];
 }
@@ -240,7 +242,9 @@ char& String::at(int pos) {
 char& String::operator[](int pos) {
 	if (pos < 0 || pos > this->l - 1) {
 		std::cout << "Invalid position. Returning Null\n";
-		return this->s[this->l];
+		static char null;
+		null = '\0';
+		return null;
 	}
 	return this->s[pos];
 }
@@ -248,7 +252,9 @@ char& String::operator[](int pos) {
 const char& String::operator[](int pos) const {
 	if (pos < 0 || pos > this->l - 1) {
 		std::cout << "Invalid position. Returning Null\n";
-		return this->s[this->l];
+		static char null;
+		null = '\0';
+		return null;
 	}
 	return this->s[pos];
 }
@@ -275,7 +281,7 @@ void String::ReplaceFirst(char c) {
 }
 
 String& String::insert(int pos, const char str) {
-	if (pos < 0 || pos > this->l - 1) {
+	if (pos < 0 || pos > this->l) {
 		std::cout << "Invalid position.\n";
 		exit(1);
 	}
@@ -286,7 +292,7 @@ String& String::insert(int pos, const char str) {
 }
 
 String& String::insert(int pos, const char* first) {
-	if (pos < 0 || pos > this->l - 1) {
+	if (pos < 0 || pos > this->l) {
 		std::cout << "Invalid position.\n";
 		exit(1);
 	}
@@ -549,18 +555,21 @@ void String::remove_at(int idx) {
 
 void String::remove_first(char ch) {
 	int idx = find_first(ch);
+	if (idx == -1) return;
 	this->s = shrink(this->s, idx);
 	this->l--;
 }
 
 void String::remove_last(char ch) {
 	int idx = find_last(ch);
+	if (idx == -1) return;
 	this->s = shrink(this->s, idx);
 	this->l--;
 }
 
 void String::remove_all(char ch) {
 	int idx = find_first(ch);
+	if (idx == -1) return;
 	while (idx != -1) {
 		this->s = shrink(this->s, idx);
 		this->l--;
@@ -640,6 +649,7 @@ std::ostream& operator<<(std::ostream& out, const String& str) {
 
 std::istream& operator>>(std::istream& in, String& str) {
 	String temp;
+	if (str.s != nullptr) delete[] str.s;
 	str.s = new char[1];
 	str.s[0] = '\0';
 	str.l = 0;

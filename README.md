@@ -48,6 +48,9 @@ Public Methods :
         virtual void display_info(); #Outputs User Information, Can be overridden by derived classes to customise the information to output.
         void change_password(String); #Updates current password.
         void set_name(String); #Updates current name.
+        void set_locked(bool); #Updates locked to argument.
+        void increment_attempts(); #Increments attempts by 1.
+        void reset_attempts(); #Resets attempts to 0.
         virtual void show_menu() = 0; #Pure Virtual Function will be defined in derived classes.
         virtual void serialize() = 0; #Pure Virtual Function will be defined in derived classes.
         virtual void deserialize(String) = 0; #Pure Virtual Function will be defined in derived classes.
@@ -153,7 +156,7 @@ Private Attributes :
 Public Methods : 
 
     Constructors : 
-        Patient(); #Default constructor, Useful when creating store for Pateint.
+        Patient(); #Default constructor, Useful when creating store for Patient.
         Patient(String, String, String, String, int, bool, int, double, String); #Parameterized Constructor.
         Patient(const Patient&); #Copy constructor.
     Other Methods : 
@@ -167,3 +170,33 @@ Public Methods :
         void book_appointment(Storage<Doctor> &, Storage<Appointment>&); #Allows Patient to book an appointment.
         void pay_outstanding_dues(double); #Allows Patient to clear their dues. 
         void add_medical_record(const String&, const String&); #Function used by doctor to add notes to Patient's medicalHistory.
+
+
+Admin : 
+
+Derived from User. Is a User in the System. Manages all accounts, adding new accounts, unlocking and locking accounts.
+
+Imports and Uses custom built String.
+
+Private Attributes : 
+
+    String adminLevel; #Stores what the type of the Admin is to enforce heirarchical structure.
+    String department; #Which department the admin belongs to.
+
+Public Methods :
+
+    Constructors : 
+        Admin(); #Default constructor, Useful when creating store for Admin.
+        Admin(String, String, String, String, int, bool, String, String); #Parameterized Constructor
+        Admin(const Admin&); #Copy Constructor
+    Other Methods :
+        Admin& operator=(const Admin&); #Assignment Function
+        String get_admin_level(); #Returns adminLevel.
+        String get_department(); #Returns department.
+        void show_menu() override; #Shows the menu relevant for Admin.
+        String serialize() override; #Returns all Admin attributes in a single String in CSV format to be stored in files.
+        void add_doctor(Storage<Doctor>&); #Adds a new Doctor into the system.
+        void add_patient(Storage <Patient>&); #Adds a new Patient into the system.
+        void unlock_user(Storage<Doctor>&, Storage<Patient>&, Storage<Admin>&); #Unlocks a locked account.
+        void lock_user(Storage<Doctor>&, Storage<Patient>&, Storage<Admin>&); #Locks an unlocked account.
+        void view_all_records(Storage<Doctor>&, Storage<Patient>&, Storage<Admin>&, Storage<Appointment>&); #Displays all users and appointments in the system.

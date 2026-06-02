@@ -56,3 +56,15 @@ void User::change_password(String newPass) {
 void User::set_name(String newName) {
 	this->name = newName;
 }
+
+void User::set_locked(bool state) {
+	this->locked = state;
+}
+
+void User::increment_attempts() {
+	this->attempts++;
+}
+
+void User::reset_attempts() {
+	this->attempts = 0;
+}
