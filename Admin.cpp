@@ -1,4 +1,5 @@
 #include "Admin.h"
+#include "HospitalSystem.h"
 
 Admin::Admin() : User(), adminLevel{""}, department{""} {}
 
@@ -31,7 +32,8 @@ void Admin::show_menu() {
 	std::cout << "4. Lock User\n";
 	std::cout << "5. Unlock User\n";
 	std::cout << "6. View All Records\n";
-	std::cout << "7. Exit\n";
+	std::cout << "7. Change Password\n";
+	std::cout << "8. Exit\n";
 	std::cout << "======================================\n";
 	std::cout << "Enter your choice: ";
 }
@@ -53,33 +55,22 @@ void Admin::add_doctor(Storage<Doctor>& dr_store) {
 	}
 	String ID;
 	Doctor* tempDoc = nullptr;
-	bool isValidFormat = false;
-	do {
+	while (true) {
 		std::cout << "Enter Doctor ID to Add (Format : DOC_XX, Enter '0' to exit) : ";
 		std::cin >> ID;
 		ID = ID.trim();
 		if (ID == "0") return;
-		isValidFormat = true;
-		if (ID.Length() < 5 || !(ID[0] == 'D' && ID[1] == 'O' && ID[2] == 'C' && ID[3] == '_')) {
-			isValidFormat = false;
-		}
-		else {
-			for (int i = 4; i < ID.Length(); i++) {
-				if (ID[i] < '0' || ID[i] > '9') {
-					isValidFormat = false;
-					break;
-				}
-			}
-		}
-		if (!isValidFormat) {
+		if (!HospitalSystem::is_valid_id(ID, "DOC_")) {
 			std::cout << "Error : Invalid ID Format!\n";
 			continue;
 		}
 		tempDoc = dr_store.find_ptr(ID);
 		if (tempDoc != nullptr) {
 			std::cout << "Error : Doctor ID already exists in system, Try a different ID.\n";
+			continue;
 		}
-	} while (tempDoc != nullptr || !isValidFormat);
+		break;
+	}
 	String name, pass, spec;
 	double cF;
 	int shiftInt;
@@ -98,7 +89,7 @@ void Admin::add_doctor(Storage<Doctor>& dr_store) {
 		std::cin >> shiftInt;
 		if (shiftInt != 1 && shiftInt != 2) std::cout << "Invalid input. Try Again.\n";
 	} while (shiftInt != 1 && shiftInt != 2);
-	dr_store.add(Doctor(ID, name, pass, "Doctor", 0, false, spec, cF, shiftInt));
+	dr_store.add(Doctor(ID, name, HospitalSystem::hash_password(pass), "Doctor", 0, false, spec, cF, shiftInt));
 	std::cout << "\nSUCCESS Doctor " << name << " successfully registered in the system!\n";
 }
 
@@ -115,33 +106,22 @@ void Admin::add_patient(Storage<Patient>& pat_store) {
 	}
 	String ID;
 	Patient* tempPat = nullptr;
-	bool isValidFormat = false;
-	do {
+	while (true) {
 		std::cout << "Enter Patient ID to Add (Format : PAT_XX, Enter '0' to exit) : ";
 		std::cin >> ID;
 		ID = ID.trim();
 		if (ID == "0") return;
-		isValidFormat = true;
-		if (ID.Length() < 5 || !(ID[0] == 'P' && ID[1] == 'A' && ID[2] == 'T' && ID[3] == '_')) {
-			isValidFormat = false;
-		}
-		else {
-			for (int i = 4; i < ID.Length(); i++) {
-				if (ID[i] < '0' || ID[i] > '9') {
-					isValidFormat = false;
-					break;
-				}
-			}
-		}
-		if (!isValidFormat) {
+		if (!HospitalSystem::is_valid_id(ID, "PAT_")) {
 			std::cout << "Error : Invalid ID Format!\n";
 			continue;
 		}
 		tempPat = pat_store.find_ptr(ID);
 		if (tempPat != nullptr) {
 			std::cout << "Error : Patient ID already exists in system, Try a different ID.\n";
+			continue;
 		}
-	} while (tempPat != nullptr || !isValidFormat);
+		break;
+	}
 	String name, pass;
 	int age;
 	std::cout << "Enter Patient Name : ";
@@ -151,7 +131,7 @@ void Admin::add_patient(Storage<Patient>& pat_store) {
 	pass = pass.trim();
 	std::cout << "Enter Patient Age : ";
 	std::cin >> age;
-	pat_store.add(Patient(ID, name, pass, "Patient", 0, false, age, 0.0, ""));
+	pat_store.add(Patient(ID, name, HospitalSystem::hash_password(pass), "Patient", 0, false, age, 0.0, ""));
 	std::cout << "\nSUCCESS Patient " << name << " successfully registered in the system!\n";
 }
 
@@ -172,33 +152,22 @@ void Admin::add_admin(Storage<Admin>& adm_store) {
 	}
 	String ID;
 	Admin* tempAdm = nullptr;
-	bool isValidFormat = false;
-	do {
+	while (true) {
 		std::cout << "Enter Admin ID to Add (Format : ADM_XX, Enter '0' to exit) : ";
 		std::cin >> ID;
 		ID = ID.trim();
 		if (ID == "0") return;
-		isValidFormat = true;
-		if (ID.Length() < 5 || !(ID[0] == 'A' && ID[1] == 'D' && ID[2] == 'M' && ID[3] == '_')) {
-			isValidFormat = false;
-		}
-		else {
-			for (int i = 4; i < ID.Length(); i++) {
-				if (ID[i] < '0' || ID[i] > '9') {
-					isValidFormat = false;
-					break;
-				}
-			}
-		}
-		if (!isValidFormat) {
+		if (!HospitalSystem::is_valid_id(ID, "ADM_")) {
 			std::cout << "Error : Invalid ID Format!\n";
 			continue;
 		}
 		tempAdm = adm_store.find_ptr(ID);
 		if (tempAdm != nullptr) {
 			std::cout << "Error : Admin ID already exists in system, Try a different ID.\n";
+			continue;
 		}
-	} while (tempAdm != nullptr || !isValidFormat);
+		break;
+	}
 	String name, pass, level, dept;
 	std::cout << "Enter Admin Name : ";
 	std::cin >> name;
@@ -213,7 +182,7 @@ void Admin::add_admin(Storage<Admin>& adm_store) {
 	std::cin >> dept;
 	dept = dept.trim();
 
-	adm_store.add(Admin(ID, name, pass, "Admin", 0, false, level, dept));
+	adm_store.add(Admin(ID, name, HospitalSystem::hash_password(pass), "Admin", 0, false, level, dept));
 	std::cout << "\nSUCCESS Admin " << name << " successfully registered in the system!\n";
 }
 

@@ -3,7 +3,7 @@
 #include "Patient.h"
 #include "Doctor.h"
 #include "Appointment.h"
-#include "String"
+#include "String.h"
 
 class Admin : public User {
 private:

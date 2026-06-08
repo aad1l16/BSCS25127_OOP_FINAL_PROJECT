@@ -24,7 +24,6 @@ public:
 	bool authenticate(String);
 	virtual void display_info();
 	void change_password(String);
-	void set_name(String);
 	void set_locked(bool);
 	void increment_attempts();
 	void reset_attempts();

@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "Patient.h"
+#include "HospitalSystem.h"
 
 Patient::Patient() : User(), age{ 0 }, outstandingBill{ 0.0 }, medicalHistory{ "" } {}
 
@@ -13,6 +14,10 @@ Patient& Patient::operator=(const Patient& p) {
 	this->outstandingBill = p.outstandingBill;
 	this->medicalHistory = p.medicalHistory;
 	return *this;
+}
+
+void Patient::add_outstanding_balance(double amt) {
+	this->outstandingBill += amt;
 }
 
 int Patient::get_age() {
@@ -31,10 +36,13 @@ void Patient::show_menu() {
 	std::cout << "\n======================================\n";
 	std::cout << "PATIENT DASHBOARD | " << this->get_user_name() << "\n";
 	std::cout << "======================================\n";
-	std::cout << "1. Book an Appointment\n";
-	std::cout << "2. View Medical History\n";
-	std::cout << "3. Pay Outstanding Dues\n";
-	std::cout << "4. Exit / Logout\n";
+	std::cout << "1. View Appointment\n";
+	std::cout << "2. Book an Appointment\n";
+	std::cout << "3. Cancel an Appointment\n";
+	std::cout << "4. View Medical History\n";
+	std::cout << "5. Pay Outstanding Dues\n";
+	std::cout << "6. Change Password\n";
+	std::cout << "7. Exit / Logout\n";
 	std::cout << "======================================\n";
 	std::cout << "Enter your choice: ";
 }
@@ -54,10 +62,60 @@ void Patient::view_medical_history() {
 	else {
 		std::cout << this->medicalHistory << std::endl;
 	}
+	std::cin.ignore(1000, '\n');
+	String temp;
+	std::cout << "Press [Enter] to return to Doctor Menu\n";
+	std::cin >> temp;
+}
+
+void Patient::view_appointments(Storage<Appointment>& appt_store) {
+	std::cin.ignore(1000, '\n');
+	std::cout << "\n--- Pending Appointments ---\n";
+	int ct = appt_store.get_count(), tempCt = 0;
+	for (int i = 0; i < ct; i++) {
+		Appointment& temp = appt_store.get_at(i);
+		if (this->UserID == temp.get_patient_id() && temp.get_status() == "Pending") {
+			std::cout << temp.get_user_id() << " " << temp.get_patient_id() << " " << temp.get_doctor_id() << " " << temp.get_date() << " " << temp.get_time() << std::endl;
+			tempCt++;
+		}
+	}
+	if (tempCt == 0) {
+		std::cout << "No Pending Appointments.\n";
+	}
+	tempCt = 0;
+	std::cout << "\n--- Completed Appointments ---\n";
+	for (int i = 0; i < ct; i++) {
+		Appointment& temp = appt_store.get_at(i);
+		if (this->UserID == temp.get_patient_id() && temp.get_status() == "Completed") {
+			std::cout << temp.get_user_id() << " " << temp.get_patient_id() << " " << temp.get_doctor_id() << " " << temp.get_date() << " " << temp.get_time() << std::endl;
+			tempCt++;
+		}
+	}
+	if (tempCt == 0) {
+		std::cout << "No Completed Appointments.\n";
+	}
+	tempCt = 0;
+	std::cout << "\n--- Cancelled Appointments ---\n";
+	for (int i = 0; i < ct; i++) {
+		Appointment& temp = appt_store.get_at(i);
+		if (this->UserID == temp.get_patient_id() && temp.get_status() == "Cancelled") {
+			std::cout << temp.get_user_id() << " " << temp.get_patient_id() << " " << temp.get_doctor_id() << " " << temp.get_date() << " " << temp.get_time() << std::endl;
+			tempCt++;
+		}
+	}
+	if (tempCt == 0) {
+		std::cout << "No Cancelled Appointments.\n";
+	}
+	String temp;
+	std::cout << "Press [Enter] to return to Doctor Menu\n";
+	std::cin >> temp;
 }
 
 void Patient::book_appointment(Storage<Doctor>& dr_store, Storage<Appointment>& appt_store) {
+	std::cout << "\n --- Book Appointment Portal --- \n";
 	std::cout << "\n ---Available Doctors--- \n";
+	
+	std::cin.ignore(1000, '\n');
 
 	int ct = dr_store.get_count();
 
@@ -131,7 +189,6 @@ void Patient::book_appointment(Storage<Doctor>& dr_store, Storage<Appointment>& 
 
 	} while (isSlotOccup || isPastDate);
 
-	this->outstandingBill += tempDoc->get_consultation_fee();
 	Appointment newAppt(apptID, this->UserID, tempDoc->get_user_id(), date, tempShift, "Pending");
 	appt_store.add(newAppt);
 
@@ -140,25 +197,104 @@ void Patient::book_appointment(Storage<Doctor>& dr_store, Storage<Appointment>& 
 	std::cout << "Generated Appointment ID : " << apptID << "\n";
 	std::cout << "Confirmed with Doctor   : Dr. " << tempDoc->get_user_name() << "\n";
 	std::cout << "Assigned Working Shift   : " << tempShift << "\n";
-	std::cout << "Consultation Fee Added   : " << tempDoc->get_consultation_fee() << "\n";
 	std::cout << "==================================================\n";
 }
 
-void Patient::pay_outstanding_dues(double amt) {
-	if (amt <= 0) {
-		std::cout << "Invalid Amount.\n";
+void Patient::cancel_appointment(Storage<Appointment>& appt_store) {
+	std::cout << "\n --- Cancel Appointment Portal --- \n";
+	std::cout << "\n --- Current Appointments --- \n";
+	std::cin.ignore(1000, '\n');
+	int ct = appt_store.get_count(), currentUserCount = 0;
+	for (int i = 0; i < ct; i++) {
+		Appointment& tempAppt = appt_store.get_at(i);
+		if (this->UserID == tempAppt.get_patient_id()) {
+			std::cout << "Appointment ID: " << tempAppt.get_user_id() << " | Date: " << tempAppt.get_date() << " | Status: " << tempAppt.get_status() << std::endl;
+			currentUserCount++;
+		}
+	}
+	if (currentUserCount == 0) {
+		std::cout << "You have no scheduled appointments.\n";
 		return;
 	}
-	if (amt > this->outstandingBill) {
-		std::cout << "Payment exceeds current outstanding dues of " << this->outstandingBill << std::endl;
+	String ID;
+	Appointment* ptr = nullptr;
+	while (true) {
+		std::cout << "Enter Appointment ID to cancel (or '0' to exit) : ";
+		std::cin >> ID;
+		ID = ID.trim();
+		if (ID == "0") {
+			std::cout << "Cancellation Aborted.\n";
+			return;
+		}
+		if (!HospitalSystem::is_valid_id(ID, "APT_")) {
+			std::cout << "Error : Invalid ID entered. Format MUST be APT_XX.\n";
+			continue;
+		}
+		ptr = appt_store.find_ptr(ID);
+		if (ptr == nullptr) {
+			std::cout << "Error : Appointment ID not found.\n";
+			continue;
+		}
+		if (ptr->get_patient_id() != this->UserID) {
+			std::cout << "Error : This appointment does not belong to you.\n";
+			ptr = nullptr;
+			continue;
+		}
+		if (ptr->get_status() == "Cancelled") {
+			std::cout << "Error : This appointment is already cancelled.\n";
+			continue;
+		}
+		if (ptr->get_status() == "Completed") {
+			std::cout << "Error : Cannot cancel appointment already fulfilled.\n";
+			continue;
+		}
+		break;
+	}
+	ptr->update_status("Cancelled");
+	std::cout << "Appointment " << ID << " successfully cancelled.\n";
+}
+
+void Patient::pay_outstanding_dues() {
+	std::cout << "\n--- Clear Outstanding Dues ---\n";
+	std::cout << "Current outstanding balance : " << this->outstandingBill << std::endl;
+	
+	std::cin.ignore(1000, '\n');
+
+	if (this->outstandingBill == 0.0) {
+		std::cout << "You have no outstanding dues.\n";
 		return;
+	}
+
+	double amt = 0.0;
+	while (true) {
+		std::cout << "Enter payment amount (Enter '0' to exit) : ";
+		std::cin >> amt;
+		if (std::cin.fail()) {
+			std::cin.clear();
+			std::cin.ignore(1000, '\n');
+			std::cout << "Enter a decimal value.\n";
+			continue;
+		}
+		if (amt == 0.0) {
+			std::cout << "Payment transaction cancelled.\n";
+			return;
+		}
+		if (amt < 0.0) {
+			std::cout << "Payment cannot be negative!\n";
+			continue;
+		}
+		if (amt > this->outstandingBill) {
+			std::cout << "Payment cannot exceed your total dues of $" << this->outstandingBill << "\n\n";
+			continue;
+		}
+		break;
 	}
 	this->outstandingBill -= amt;
-	std::cout << "Payment successful ;)! Remaining Dues : " << this->outstandingBill << std::endl;
+	std::cout << "Transaction Successful.\nSuccessfully processed payment of : $" << amt << "\nRemaining outstanding balance : $" << this->outstandingBill << std::endl;
 }
 
 void Patient::add_medical_record(const String& date, const String& newNotes) {
-	this->medicalHistory += " | ";
+	this->medicalHistory += "| ";
 	this->medicalHistory += date;
 	this->medicalHistory += " ";
 	this->medicalHistory += newNotes;

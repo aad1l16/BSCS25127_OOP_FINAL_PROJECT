@@ -53,10 +53,6 @@ void User::change_password(String newPass) {
 	this->passwordHash = newPass;
 }
 
-void User::set_name(String newName) {
-	this->name = newName;
-}
-
 void User::set_locked(bool state) {
 	this->locked = state;
 }

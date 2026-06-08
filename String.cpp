@@ -438,20 +438,24 @@ String* String::split(char delim, int& count) {
 	for (int i = 0; i < this->l; i++) {
 		if (this->s[i] == delim) {
 			ret = regrow(ret, count);
-			for (int j = temp; j < i; j++) {
-				ret[count - 1].s = regrow(ret[count - 1].s, 1);
-				ret[count - 1].s[j - temp] = this->s[j];
-				ret[count - 1].l++;
+			int tokenLen = i - temp;
+			ret[count - 1].s = new char[tokenLen + 1];
+			ret[count - 1].l = tokenLen;
+			for (int j = 0; j < tokenLen; j++) {
+				ret[count - 1].s[j] = this->s[temp + j];
 			}
+			ret[count - 1].s[tokenLen] = '\0';
 			temp = i + 1;
 		}
 	}
 	ret = regrow(ret, count);
-	for (int i = temp; i < this->l; i++) {
-		ret[count - 1].s = regrow(ret[count - 1].s, 1);
-		ret[count - 1].s[i - temp] = this->s[i];
-		ret[count - 1].l++;
+	int tokenLen = this->l - temp;
+	ret[count - 1].s = new char[tokenLen + 1];
+	ret[count - 1].l = tokenLen;
+	for (int j = 0; j < tokenLen; j++) {
+		ret[count - 1].s[j] = this->s[temp + j];
 	}
+	ret[count - 1].s[tokenLen] = '\0';
 	return ret;
 }
 
@@ -654,12 +658,10 @@ std::istream& operator>>(std::istream& in, String& str) {
 	str.s[0] = '\0';
 	str.l = 0;
 	char ch;
-	in.get(ch);
-	while (ch != '\n') {
+	while (in.get(ch) && ch != '\n') {
 		str.s = temp.regrow(str.s, 1, str.l);
 		str.s[str.l] = ch;
 		str.l++;
-		in.get(ch);
 	}
 	return in;
 }

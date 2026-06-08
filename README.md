@@ -47,13 +47,11 @@ Public Methods :
         bool authenticate(String); #Check whether password passed as arugument is same as User password.
         virtual void display_info(); #Outputs User Information, Can be overridden by derived classes to customise the information to output.
         void change_password(String); #Updates current password.
-        void set_name(String); #Updates current name.
         void set_locked(bool); #Updates locked to argument.
         void increment_attempts(); #Increments attempts by 1.
         void reset_attempts(); #Resets attempts to 0.
         virtual void show_menu() = 0; #Pure Virtual Function will be defined in derived classes.
         virtual void serialize() = 0; #Pure Virtual Function will be defined in derived classes.
-        virtual void deserialize(String) = 0; #Pure Virtual Function will be defined in derived classes.
 
 
 Storage<T> :
@@ -167,7 +165,9 @@ Public Methods :
         void show_menu() override; #Shows the menu relevant for Patient.
         String serialize() override; #Returns all Patient attributes in a single String in CSV format to be stored in files.
         void view_medical_history(); #Displays the medicalHistory if it exists.
+        void view_appointments(Storage<Appointment>&); #Allows Patient to view all their appointments.
         void book_appointment(Storage<Doctor> &, Storage<Appointment>&); #Allows Patient to book an appointment.
+        void cancel_appointment(Storage<Appointment>&); #Allows Patient to cancel an appointment.
         void pay_outstanding_dues(double); #Allows Patient to clear their dues. 
         void add_medical_record(const String&, const String&); #Function used by doctor to add notes to Patient's medicalHistory.
 
@@ -201,3 +201,40 @@ Public Methods :
         void unlock_user(Storage<Doctor>&, Storage<Patient>&, Storage<Admin>&); #Unlocks a locked account.
         void lock_user(Storage<Doctor>&, Storage<Patient>&, Storage<Admin>&); #Locks an unlocked account.
         void view_all_records(Storage<Doctor>&, Storage<Patient>&, Storage<Admin>&, Storage<Appointment>&); #Displays all users and appointments in the system.
+
+
+HospitalSystem :
+
+Central controller of the entire system. Designed using a singleton pattern so that only 1 instance of the HospitalSystem is created at one time.
+
+Imports and User custom built String.
+
+Private Attributes : 
+
+    Storage<Patient> pats; #Stores all the patients in the system.
+    Storage<Doctor> docs; #Stores all the doctors in the system.
+    Storage<Admin> admins; #Stores all the admins in the system.
+    Storage<Appointment> appts; #Stores all the appointments in the system.
+    User* currentUser; #Holds the current User logged in the system.
+
+Private Methods : 
+
+    Constructors :
+        HospitalSystem(); #Default Constructor.
+        ~HospitalSystem(); #Destructor.
+        User* find_user_anywhere(const String&); #Searches all stores to check whether user exists in system.
+        void handle_patient_flow(Patient*); #Handles flow if patient logged in.
+        void handle_doctor_flow(Doctor*); #Handles flow if doctor logged in.
+        void handle_admin_flow(Admin*); #Handles flow if admin logged in.
+        void prompt_change_password(User*); #Allows user to change their password.
+Public Methods : 
+
+    Other Methods : 
+        static HospitalSystem& get_instance(); #Creates a single instance of HospitalSystem if it doesnt exists and returns that instance each time.
+        static bool is_valid_id(const String&, const String&); #Used to check if ID entered by user is valid.
+        static String hash_password(const String&); #Used to create password hash.
+        void load_all_data(); #Loads all data from file into the system at startup.
+        void save_all_data(); #Saves all data to files before system closes.
+        int execute_login(); #Allows user to log into the system.
+        void start_system_loop(); #Starts the main system loop that handles selecting the flow for the appropriate user logged in.
+
