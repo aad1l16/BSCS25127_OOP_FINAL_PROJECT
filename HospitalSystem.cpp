@@ -1,4 +1,5 @@
 #include "HospitalSystem.h"
+#include <windows.h>
 
 //Private Methods
 
@@ -23,11 +24,13 @@ void HospitalSystem::handle_patient_flow(Patient* p) {
 	do {
 		p->show_menu();
 		std::cin >> choice;
+		system("cls");
 		if (std::cin.fail()) {
 			std::cin.clear();
 			std::cin.ignore(1000, '\n');
 			std::cout << "Invalid Input. Please enter a number.\n";
 			choice = 0;
+			system("cls");
 			continue;
 		}
 		switch (choice) {
@@ -48,11 +51,13 @@ void HospitalSystem::handle_doctor_flow(Doctor* d) {
 	do {
 		d->show_menu();
 		std::cin >> choice;
+		system("cls");
 		if (std::cin.fail()) {
 			std::cin.clear();
 			std::cin.ignore(1000, '\n');
 			std::cout << "Invalid Input. Please enter a number.\n";
 			choice = 0;
+			system("cls");
 			continue;
 		}
 		switch (choice) {
@@ -70,11 +75,13 @@ void HospitalSystem::handle_admin_flow(Admin* a) {
 	do {
 		a->show_menu();
 		std::cin >> choice;
+		system("cls");
 		if (std::cin.fail()) {
 			std::cin.clear(); 
 			std::cin.ignore(1000, '\n');
 			std::cout << "Invalid Input. Please enter a number.\n";
 			choice = 0;
+			system("cls");
 			continue;
 		}
 		switch (choice) {
@@ -97,6 +104,69 @@ void HospitalSystem::handle_admin_flow(Admin* a) {
 	} while (choice != 8);
 }
 
+void HospitalSystem::prompt_change_password(User* user) {
+	system("cls");
+	std::cin.ignore(1000, '\n');
+	String oldPass, newPass, confirmPass;
+	std::cout << "==================================================\n";
+	std::cout << "               PASSWORD SECURITY PORTAL             \n";
+	std::cout << "==================================================\n\n";
+
+	std::cout << "Enter your current password (or '0' to cancel) : ";
+	std::cin >> oldPass;
+	oldPass = oldPass.trim();
+	if (oldPass == "0") {
+		system("cls");
+		return;
+	}
+	if (hash_password(oldPass) != user->get_password()) {
+		std::cout << "\nError : Incorrect current password. Access Denied.\n";
+		std::cout << "\nPress any key to exit.";
+		std::cin.get();
+		system("cls");
+		return;
+	}
+	system("cls");
+	std::cout << "==================================================\n";
+	std::cout << "               PASSWORD SECURITY PORTAL             \n";
+	std::cout << "==================================================\n";
+	while (true) {
+		std::cout << "\nEnter new password (or '0' to cancel): ";
+		std::cin >> newPass;
+		newPass = newPass.trim();
+		if (newPass.Length() == 0) {
+			system("cls");
+			std::cout << "==================================================\n";
+			std::cout << "               PASSWORD SECURITY PORTAL             \n";
+			std::cout << "==================================================\n\n";
+			std::cout << "Error : Password cannot be blank.\n";
+			continue;
+		}
+		if (newPass == "0") {
+			system("cls");
+			return;
+		}
+		std::cout << "\nConfirm new password : ";
+		std::cin >> confirmPass;
+		confirmPass = confirmPass.trim();
+		if (newPass != confirmPass) {
+			system("cls");
+			std::cout << "==================================================\n";
+			std::cout << "               PASSWORD SECURITY PORTAL             \n";
+			std::cout << "==================================================\n\n";
+			std::cout << "Error : Passwords do not match.\n";
+			continue;
+		}
+		break;
+	}
+
+	user->change_password(hash_password(newPass));
+
+	std::cout << "Password changed successfully.\n";
+	std::cout << "\nPress any key to exit.";
+	std::cin.get();
+	system("cls");
+}
 //Public Methods
 
 HospitalSystem& HospitalSystem::get_instance() {
@@ -128,51 +198,6 @@ String HospitalSystem::hash_password(const String& pass) {
 	hash = hash % 1000000007;
 	String helper;
 	return helper.itos(hash);
-}
-
-void HospitalSystem::prompt_change_password(User* user) {
-	std::cin.ignore(1000, '\n');
-	String oldPass, newPass, confirmPass;
-	std::cout << "\n==================================================\n";
-	std::cout << "               PASSWORD SECURITY PORTAL             \n";
-	std::cout << "==================================================\n";
-
-	std::cout << "Enter your current password (or '0' to cancel) : ";
-	std::cin >> oldPass;
-	oldPass = oldPass.trim();
-	if (oldPass == "0") {
-		std::cout << "Aborting process...\n";
-		return;
-	}
-	if (hash_password(oldPass) != user->get_password()) {
-		std::cout << "Error : Incorrect current password. Access Denied.\n";
-		return;
-	}
-
-	while (true) {
-		std::cout << "Enter new password (or '0' to cancel): ";
-		std::cin >> newPass;
-		newPass = newPass.trim();
-		if (newPass.Length() == 0) {
-			std::cout << "Error : Password cannot be blank.\n";
-			continue;
-		}
-		if (newPass == "0") {
-			std::cout << "Aborting process...\n";
-			return;
-		}
-		std::cout << "Confirm new password : ";
-		std::cin >> confirmPass;
-		confirmPass = confirmPass.trim();
-		if (newPass != confirmPass) {
-			std::cout << "Error : Passwords do not match.\n";
-			continue;
-		}
-		break;
-	}
-	
-	user->change_password(hash_password(newPass));
-	std::cout << "Password changed successfully.\n";
 }
 
 void HospitalSystem::load_all_data() {
@@ -316,6 +341,10 @@ void HospitalSystem::save_all_data() {
 }
 
 int HospitalSystem::execute_login() {
+	system("cls");
+	std::cout << "==================================================\n";
+	std::cout << "                   SIGN IN PORTAL             \n";
+	std::cout << "==================================================\n\n";
 	String ID, pass;
 	User* temp = nullptr;
 	while (true) {
@@ -328,27 +357,41 @@ int HospitalSystem::execute_login() {
 		}
 		temp = find_user_anywhere(ID);
 		if (temp == nullptr) {
-			std::cout << "ID does not exist!\n";
+			system("cls");
+			std::cout << "==================================================\n";
+			std::cout << "                   SIGN IN PORTAL             \n";
+			std::cout << "==================================================\n\n";
+			std::cout << "ID does not exist!\n\n";
 			continue;
 		}
 		else if (temp->is_locked()) {
-			std::cout << "Account is LOCKED! Contact Admin to get it unlocked!\n";
+			system("cls");
+			std::cout << "==================================================\n";
+			std::cout << "                   SIGN IN PORTAL             \n";
+			std::cout << "==================================================\n\n";
+			std::cout << "Account is LOCKED! Contact Admin to get it unlocked!\n\n";
 			continue;
 		}
 		else break;
 	}
 	while (temp->get_attempts() < 3) {
-		std::cout << "Enter password : ";
+		std::cout << "\nEnter password : ";
 		std::cin >> pass;
 		pass = pass.trim();
 		if (hash_password(pass) != temp->get_password()) {
 			temp->increment_attempts();
 			if (temp->get_attempts() == 3) {
-				std::cout << "Entered the incorrect password too many times. Account LOCKED!\nContact an Admin to get it unlocked!\n";
+				if (temp->get_user_id() == "ADM_01") {
+					std::cout << "\n[CRITICAL] Root SuperAdmin password threshold reached. Core access preserved.\n";
+					temp->reset_attempts();
+					continue;
+				}
+				system("cls");
+				std::cout << "\nEntered the incorrect password too many times. Account LOCKED!\nContact an Admin to get it unlocked!\n";
 				temp->set_locked(true);
 				return 2;
 			}
-			std::cout << "Invalid password entered! Remaining Attempts : " << 3 - temp->get_attempts() << "\n\n";
+			std::cout << "\nInvalid password entered! Remaining Attempts : " << 3 - temp->get_attempts() << "\n";
 			continue;
 		}
 		else {
@@ -364,6 +407,7 @@ int HospitalSystem::execute_login() {
 void HospitalSystem::start_system_loop() {
 	while (true) {
 		int i = execute_login();
+		system("cls");
 		if (i == 0) {
 			String id = this->currentUser->get_user_id();
 			if (id[0] == 'P' && id[1] == 'A' && id[2] == 'T') {

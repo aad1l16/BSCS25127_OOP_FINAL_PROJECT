@@ -10,6 +10,7 @@
 
 
 class HospitalSystem {
+private:
 	Storage<Patient> pats;
 	Storage<Doctor> docs;
 	Storage<Admin> admins;
@@ -22,13 +23,13 @@ class HospitalSystem {
 	void handle_patient_flow(Patient*);
 	void handle_doctor_flow(Doctor*);
 	void handle_admin_flow(Admin*);
+	void prompt_change_password(User*);
 public:
 	HospitalSystem(const HospitalSystem&) = delete;
 	HospitalSystem& operator=(const HospitalSystem&) = delete;
 	static HospitalSystem& get_instance();
 	static bool is_valid_id(const String&, const String&);
 	static String hash_password(const String&);
-	void prompt_change_password(User*);
 	void load_all_data();
 	void save_all_data();
 	int execute_login();

@@ -180,7 +180,7 @@ String::String(double num) {
 	this->l = 1;
 	this->s = new char[this->l + 1];
 	this->s[0] = (intPart % 10) + '0';
-	num /= 10;
+	intPart /= 10;
 	this->s[1] = '\0';
 	for (int i = 0; intPart != 0; i++) {
 		this->s = regrow(this->s, 1, 0);
